@@ -23,7 +23,7 @@ const ModalNewTask = ({ isOpen, onClose, id = null }: Props) => {
   const [projectId, setProjectId] = useState("");
 
   const handleSubmit = async () => {
-    if (!title || !authorUserId) return;
+    if (!title || !authorUserId || !(id !== null || projectId)) return;
 
     try {
       const taskData = {
@@ -36,7 +36,7 @@ const ModalNewTask = ({ isOpen, onClose, id = null }: Props) => {
         dueDate: dueDate ? formatISO(new Date(dueDate)) : undefined,
         authorUserId: parseInt(authorUserId),
         assignedUserId: assignedUserId ? parseInt(assignedUserId) : undefined,
-        projectId: id ? Number(id) : Number(projectId),
+        projectId: id !== null ? Number(id) : Number(projectId),
       };
 
       await createTask(taskData);
@@ -47,7 +47,7 @@ const ModalNewTask = ({ isOpen, onClose, id = null }: Props) => {
   };
 
   const isFormValid = () => {
-    return title && authorUserId;
+    return (title && authorUserId) || !(id !== null || projectId);
   };
 
   const selectStyles =
