@@ -1,28 +1,30 @@
-import { useGetTasksQuery, useUpdateTaskStatusMutation } from "@/state/api";
+"use client";
+
 import React from "react";
+import { useGetTasksQuery, useUpdateTaskStatusMutation } from "@/state/api";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { Task as TaskType } from "@/state/api";
 import { EllipsisVertical, MessageSquareMore, Plus } from "lucide-react";
 import { format } from "date-fns";
 import Image from "next/image";
+import type { DropTargetMonitor, DragSourceMonitor } from 'react-dnd';
+
+// Literal type for status values
+type TaskStatus = "To Do" | "Work In Progress" | "Under Review" | "Completed";
 
 type BoardProps = {
   id: string;
   setIsModalNewTaskOpen: (isOpen: boolean) => void;
 };
 
-const taskStatus = ["To Do", "Work In Progress", "Under Review", "Completed"];
+const taskStatus: TaskStatus[] = ["To Do", "Work In Progress", "Under Review", "Completed"];
 
 const BoardView = ({ id, setIsModalNewTaskOpen }: BoardProps) => {
-  const {
-    data: tasks,
-    isLoading,
-    error,
-  } = useGetTasksQuery({ projectId: Number(id) });
+  const { data: tasks, isLoading, error } = useGetTasksQuery({ projectId: Number(id) });
   const [updateTaskStatus] = useUpdateTaskStatusMutation();
 
-  const moveTask = (taskId: number, toStatus: string) => {
+  const moveTask = (taskId: number, toStatus: TaskStatus) => {
     updateTaskStatus({ taskId, status: toStatus });
   };
 
@@ -47,9 +49,9 @@ const BoardView = ({ id, setIsModalNewTaskOpen }: BoardProps) => {
 };
 
 type TaskColumnProps = {
-  status: string;
+  status: TaskStatus;
   tasks: TaskType[];
-  moveTask: (taskId: number, toStatus: string) => void;
+  moveTask: (taskId: number, toStatus: TaskStatus) => void;
   setIsModalNewTaskOpen: (isOpen: boolean) => void;
 };
 
@@ -62,14 +64,15 @@ const TaskColumn = ({
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "task",
     drop: (item: { id: number }) => moveTask(item.id, status),
-    collect: (monitor: any) => ({
-      isOver: !!monitor.isOver(),
+    collect: (monitor: DropTargetMonitor) => ({
+      isOver: !!monitor.isOver()
     }),
   }));
 
   const tasksCount = tasks.filter((task) => task.status === status).length;
 
-  const statusColor: any = {
+  // Specific type for statusColor
+  const statusColor: Record<TaskStatus, string> = {
     "To Do": "#2563EB",
     "Work In Progress": "#059669",
     "Under Review": "#D97706",
@@ -129,8 +132,8 @@ const Task = ({ task }: TaskProps) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "task",
     item: { id: task.id },
-    collect: (monitor: any) => ({
-      isDragging: !!monitor.isDragging(),
+    collect: (monitor: DragSourceMonitor) => ({
+      isDragging: !!monitor.isDragging()
     }),
   }));
 
@@ -151,12 +154,12 @@ const Task = ({ task }: TaskProps) => {
         priority === "Urgent"
           ? "bg-red-200 text-red-700"
           : priority === "High"
-            ? "bg-yellow-200 text-yellow-700"
-            : priority === "Medium"
-              ? "bg-green-200 text-green-700"
-              : priority === "Low"
-                ? "bg-blue-200 text-blue-700"
-                : "bg-gray-200 text-gray-700"
+          ? "bg-yellow-200 text-yellow-700"
+          : priority === "Medium"
+          ? "bg-green-200 text-green-700"
+          : priority === "Low"
+          ? "bg-blue-200 text-blue-700"
+          : "bg-gray-200 text-gray-700"
       }`}
     >
       {priority}
@@ -191,7 +194,6 @@ const Task = ({ task }: TaskProps) => {
                   key={tag}
                   className="rounded-full bg-blue-100 px-2 py-1 text-xs"
                 >
-                  {" "}
                   {tag}
                 </div>
               ))}
