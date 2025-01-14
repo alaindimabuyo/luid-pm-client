@@ -99,8 +99,8 @@ export const api = createApi({
           const userDetails = userDetailsResponse.data as User;
 
           return {data: {user, userSub, userDetails}};
-        } catch (_) {
-          return {error: {status: "CUSTOM_ERROR", error: "Could not fetch user data"}}
+        } catch {
+          return { error: { status: "CUSTOM_ERROR", error: "Could not fetch user data" } };
         }
       },
     }),
