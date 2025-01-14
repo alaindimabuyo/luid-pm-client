@@ -92,7 +92,7 @@ const ProjectHeader = ({ activeTab, setActiveTab }: Props) => {
 
 type TabButtonProps = {
   name: string;
-  icon: any;
+  icon: React.ReactNode;
   activeTab: string;
   setActiveTab: (tabName: string) => void;
 };
