@@ -1,6 +1,6 @@
 "use client";
-
 import { useGetUsersQuery } from "@/state/api";
+import React from "react";
 import { useAppSelector } from "../redux";
 import Header from "@/components/Header";
 import {
@@ -19,6 +19,7 @@ const CustomToolBar = () => (
     <GridToolbarExport />
   </GridToolbarContainer>
 );
+
 const columns: GridColDef[] = [
   { field: "userId", headerName: "ID", width: 100 },
   { field: "username", headerName: "Username", width: 150 },
@@ -30,7 +31,7 @@ const columns: GridColDef[] = [
       <div className="flex h-full w-full items-center justify-center">
         <div className="h-9 w-9">
           <Image
-            src={`/${params.value}`}
+            src={`https://pm-s3-images.s3.us-east-2.amazonaws.com/${params.value}`}
             alt={params.row.username}
             width={100}
             height={50}
@@ -40,10 +41,9 @@ const columns: GridColDef[] = [
       </div>
     ),
   },
-  { field: "role", headerName: "Role", width: 150 },
 ];
 
-const UsersPage = () => {
+const Users = () => {
   const { data: users, isLoading, isError } = useGetUsersQuery();
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
@@ -59,7 +59,9 @@ const UsersPage = () => {
           columns={columns}
           getRowId={(row) => row.userId}
           pagination
-          slots={{ toolbar: CustomToolBar }}
+          slots={{
+            toolbar: CustomToolBar,
+          }}
           className={dataGridClassNames}
           sx={dataGridSxStyles(isDarkMode)}
         />
@@ -68,4 +70,4 @@ const UsersPage = () => {
   );
 };
 
-export default UsersPage;
+export default Users;
