@@ -19,6 +19,7 @@ import {
   AlertTriangle,
   Layers3,
   ShieldAlert,
+  LayoutDashboard,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
@@ -86,6 +87,7 @@ const Sidebar = () => {
         {/* NAVBAR LINKS */}
         <nav className="z-10 w-full">
           <SidebarLink href="/" icon={Home} label="Home" />
+          <SidebarLink href="/mission-control" icon={LayoutDashboard} label="Mission Control" />
           <SidebarLink href="/timeline" icon={Briefcase} label="Timeline" />
           <SidebarLink href="/search" icon={Search} label="Search" />
           <SidebarLink href="/settings" icon={Settings} label="Settings" />
